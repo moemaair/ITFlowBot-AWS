@@ -1,0 +1,439 @@
+{
+  "metadata": {
+    "schemaVersion": "1.0",
+    "importType": "LEX",
+    "importFormat": "JSON"
+  },
+  "resource": {
+    "name": "ITSupportBot",
+    "version": "1",
+    "intents": [
+      {
+        "name": "GreetingIntent",
+        "version": "1",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          {
+            "utterance": "Hello"
+          },
+          {
+            "utterance": "Hi"
+          },
+          {
+            "utterance": "Hey"
+          },
+          {
+            "utterance": "Good morning"
+          },
+          {
+            "utterance": "Good afternoon"
+          },
+          {
+            "utterance": "Help"
+          },
+          {
+            "utterance": "I need help"
+          },
+          {
+            "utterance": "What can you do"
+          },
+          {
+            "utterance": "Start"
+          }
+        ]
+      },
+      {
+        "name": "PasswordReset",
+        "version": "1",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          {
+            "utterance": "I need to reset my password"
+          },
+          {
+            "utterance": "Reset password"
+          },
+          {
+            "utterance": "Forgot my password"
+          },
+          {
+            "utterance": "Password reset"
+          },
+          {
+            "utterance": "I can't remember my password"
+          },
+          {
+            "utterance": "My password isn't working"
+          },
+          {
+            "utterance": "Change password"
+          },
+          {
+            "utterance": "I forgot my password"
+          }
+        ],
+        "slots": [
+          {
+            "name": "Username",
+            "slotConstraint": "Required",
+            "slotType": "AMAZON.AlphaNumeric",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What's your username?"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 1
+          },
+          {
+            "name": "Email",
+            "slotConstraint": "Required",
+            "slotType": "AMAZON.EmailAddress",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What's your email address for verification?"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 2
+          }
+        ]
+      },
+      {
+        "name": "AccountLockout",
+        "version": "1",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          {
+            "utterance": "My account is locked"
+          },
+          {
+            "utterance": "Account locked"
+          },
+          {
+            "utterance": "I'm locked out"
+          },
+          {
+            "utterance": "Can't log in"
+          },
+          {
+            "utterance": "Account lockout"
+          },
+          {
+            "utterance": "Unlock my account"
+          },
+          {
+            "utterance": "I can't access my account"
+          },
+          {
+            "utterance": "Login issues"
+          }
+        ],
+        "slots": [
+          {
+            "name": "Username",
+            "slotConstraint": "Required",
+            "slotType": "AMAZON.AlphaNumeric",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What's your username?"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 1
+          }
+        ]
+      },
+      {
+        "name": "SoftwareInstall",
+        "version": "1",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          {
+            "utterance": "I need software installed"
+          },
+          {
+            "utterance": "Install software"
+          },
+          {
+            "utterance": "Software installation"
+          },
+          {
+            "utterance": "I need new software"
+          },
+          {
+            "utterance": "Can you install software"
+          },
+          {
+            "utterance": "Software request"
+          },
+          {
+            "utterance": "I need {SoftwareName}"
+          },
+          {
+            "utterance": "Install {SoftwareName}"
+          }
+        ],
+        "slots": [
+          {
+            "name": "SoftwareName",
+            "slotConstraint": "Required",
+            "slotType": "AMAZON.SearchQuery",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What software would you like to install?"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 1
+          },
+          {
+            "name": "BusinessJustification",
+            "slotConstraint": "Required",
+            "slotType": "AMAZON.SearchQuery",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "Please provide a business justification for this software:"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 2
+          }
+        ]
+      },
+      {
+        "name": "HardwareIssue",
+        "version": "1",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          {
+            "utterance": "Hardware problem"
+          },
+          {
+            "utterance": "My computer isn't working"
+          },
+          {
+            "utterance": "Hardware issue"
+          },
+          {
+            "utterance": "Equipment problem"
+          },
+          {
+            "utterance": "My laptop is broken"
+          },
+          {
+            "utterance": "Monitor not working"
+          },
+          {
+            "utterance": "Printer issue"
+          },
+          {
+            "utterance": "My {IssueType} is not working"
+          },
+          {
+            "utterance": "{IssueType} problem"
+          }
+        ],
+        "slots": [
+          {
+            "name": "IssueType",
+            "slotConstraint": "Required",
+            "slotType": "HardwareType",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What type of hardware issue are you experiencing? (laptop, desktop, monitor, printer, etc.)"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 1
+          },
+          {
+            "name": "Description",
+            "slotConstraint": "Required",
+            "slotType": "AMAZON.SearchQuery",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "Please describe the issue you're experiencing:"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 2
+          }
+        ]
+      },
+      {
+        "name": "TicketStatus",
+        "version": "1",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          {
+            "utterance": "Check ticket status"
+          },
+          {
+            "utterance": "Ticket status"
+          },
+          {
+            "utterance": "What's the status of my ticket"
+          },
+          {
+            "utterance": "Status update"
+          },
+          {
+            "utterance": "Check my ticket"
+          },
+          {
+            "utterance": "Ticket {TicketId}"
+          },
+          {
+            "utterance": "Status of ticket {TicketId}"
+          },
+          {
+            "utterance": "My ticket status"
+          }
+        ],
+        "slots": [
+          {
+            "name": "TicketId",
+            "slotConstraint": "Optional",
+            "slotType": "AMAZON.AlphaNumeric",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What's your ticket ID?"
+                }
+              ],
+              "maxRetries": 2
+            },
+            "priority": 1
+          }
+        ]
+      }
+    ],
+    "slotTypes": [
+      {
+        "name": "HardwareType",
+        "version": "1",
+        "enumerationValues": [
+          {
+            "value": "laptop",
+            "synonyms": [
+              "laptop",
+              "notebook",
+              "portable computer"
+            ]
+          },
+          {
+            "value": "desktop",
+            "synonyms": [
+              "desktop",
+              "computer",
+              "pc"
+            ]
+          },
+          {
+            "value": "monitor",
+            "synonyms": [
+              "monitor",
+              "screen",
+              "display"
+            ]
+          },
+          {
+            "value": "printer",
+            "synonyms": [
+              "printer",
+              "printing device"
+            ]
+          },
+          {
+            "value": "keyboard",
+            "synonyms": [
+              "keyboard",
+              "keys"
+            ]
+          },
+          {
+            "value": "mouse",
+            "synonyms": [
+              "mouse",
+              "pointer"
+            ]
+          },
+          {
+            "value": "phone",
+            "synonyms": [
+              "phone",
+              "telephone",
+              "desk phone"
+            ]
+          },
+          {
+            "value": "headset",
+            "synonyms": [
+              "headset",
+              "headphones",
+              "earphones"
+            ]
+          }
+        ],
+        "valueSelectionStrategy": "TOP_RESOLUTION"
+      }
+    ],
+    "voiceId": "Joanna",
+    "childDirected": false,
+    "locale": "en_US",
+    "idleSessionTTLInSeconds": 300,
+    "description": "IT Support Bot for internal employee assistance",
+    "clarificationPrompt": {
+      "messages": [
+        {
+          "contentType": "PlainText",
+          "content": "I'm sorry, I didn't understand that. Can you please rephrase your request? I can help with password resets, account lockouts, software installation, hardware issues, or ticket status."
+        }
+      ],
+      "maxRetries": 2
+    },
+    "abortStatement": {
+      "messages": [
+        {
+          "contentType": "PlainText",
+          "content": "Okay, I'm here if you need IT support. Have a great day!"
+        }
+      ]
+    }
+  }
+}
