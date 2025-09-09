@@ -1,0 +1,14 @@
+*.pyc
+__pycache__/
+.env
+.venv/
+venv/
+cdk.out/
+.DS_Store
+*.swp
+*.swo
+*~
+.git/
+node_modules/
+.aws-sam/
+samconfig.toml

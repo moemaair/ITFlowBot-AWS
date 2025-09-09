@@ -1,0 +1,180 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS Lex Bot configuration for IT Flow Bot'
+
+Parameters:
+  LambdaFunctionArn:
+    Type: String
+    Description: 'ARN of the Lambda function for fulfillment (from CDK stack output)'
+  LexServiceRoleArn:
+    Type: String
+    Description: 'ARN of the Lex service role (from CDK stack output)'
+
+Resources:
+  ITFlowBot:
+    Type: AWS::Lex::Bot
+    Properties:
+      Name: ITFlowBot
+      Description: IT Flow Management Bot powered by AWS Lex
+      RoleArn: !Ref LexServiceRoleArn
+      DataPrivacy:
+        ChildDirected: false
+      IdleSessionTTLInSeconds: 300
+      BotLocales:
+        - LocaleId: en_US
+          Description: English (US) locale for IT Flow Bot
+          NluConfidenceThreshold: 0.4
+          VoiceSettings:
+            VoiceId: Joanna
+          SlotTypes:
+            - SlotTypeName: TicketTypeSlot
+              Description: Types of IT tickets
+              SlotTypeValues:
+                - SampleValue:
+                    Value: Hardware
+                  Synonyms:
+                    - Value: hardware
+                    - Value: computer
+                    - Value: laptop
+                    - Value: desktop
+                - SampleValue:
+                    Value: Software
+                  Synonyms:
+                    - Value: software
+                    - Value: application
+                    - Value: program
+                    - Value: app
+                - SampleValue:
+                    Value: Network
+                  Synonyms:
+                    - Value: network
+                    - Value: internet
+                    - Value: connectivity
+                    - Value: wifi
+                - SampleValue:
+                    Value: Access
+                  Synonyms:
+                    - Value: access
+                    - Value: permissions
+                    - Value: login
+                    - Value: password
+              ValueSelectionStrategy: TOP_RESOLUTION
+          Intents:
+            - IntentName: AMAZON.FallbackIntent
+              Description: Default fallback intent
+              ParentIntentSignature: AMAZON.FallbackIntent
+            - IntentName: CreateTicket
+              Description: Intent to create a new IT ticket
+              SampleUtterances:
+                - Utterance: I need to create a ticket
+                - Utterance: Create a new ticket
+                - Utterance: Report an issue
+                - Utterance: I have a problem
+                - Utterance: Something is not working
+              FulfillmentCodeHook:
+                Enabled: true
+              SlotPriorities:
+                - Priority: 1
+                  SlotName: TicketType
+                - Priority: 2
+                  SlotName: Description
+              Slots:
+                - SlotName: TicketType
+                  Description: Type of ticket
+                  SlotTypeName: TicketTypeSlot
+                  ValueElicitationSetting:
+                    SlotConstraint: Required
+                    PromptSpecification:
+                      MessageGroupsList:
+                        - Message:
+                            PlainTextMessage:
+                              Value: What type of issue are you experiencing? (Hardware, Software, Network, or Access)
+                      MaxRetries: 3
+                - SlotName: Description
+                  Description: Description of the issue
+                  SlotTypeName: AMAZON.AlphaNumeric
+                  ValueElicitationSetting:
+                    SlotConstraint: Required
+                    PromptSpecification:
+                      MessageGroupsList:
+                        - Message:
+                            PlainTextMessage:
+                              Value: Can you please describe your issue in more detail?
+                      MaxRetries: 3
+            - IntentName: CheckTicketStatus
+              Description: Intent to check ticket status
+              SampleUtterances:
+                - Utterance: What's the status of my ticket
+                - Utterance: Check ticket status
+                - Utterance: How is my ticket doing
+                - Utterance: Update on ticket {TicketNumber}
+              FulfillmentCodeHook:
+                Enabled: true
+              SlotPriorities:
+                - Priority: 1
+                  SlotName: TicketNumber
+              Slots:
+                - SlotName: TicketNumber
+                  Description: Ticket number to check
+                  SlotTypeName: AMAZON.AlphaNumeric
+                  ValueElicitationSetting:
+                    SlotConstraint: Required
+                    PromptSpecification:
+                      MessageGroupsList:
+                        - Message:
+                            PlainTextMessage:
+                              Value: Please provide your ticket number so I can check its status.
+                      MaxRetries: 3
+            - IntentName: GetHelp
+              Description: Intent to get general help
+              SampleUtterances:
+                - Utterance: Help
+                - Utterance: What can you do
+                - Utterance: How can you help me
+                - Utterance: What are your capabilities
+              FulfillmentCodeHook:
+                Enabled: true
+
+  ITFlowBotVersion:
+    Type: AWS::Lex::BotVersion
+    Properties:
+      BotId: !Ref ITFlowBot
+      Description: Version 1 of IT Flow Bot
+      BotVersionLocaleSpecification:
+        - LocaleId: en_US
+          BotVersionLocaleDetails:
+            SourceBotVersion: DRAFT
+
+  ITFlowBotAlias:
+    Type: AWS::Lex::BotAlias
+    Properties:
+      BotAliasName: Production
+      BotId: !Ref ITFlowBot
+      Description: Production alias for IT Flow Bot
+      BotVersion: !GetAtt ITFlowBotVersion.BotVersion
+      BotAliasLocaleSettings:
+        - LocaleId: en_US
+          BotAliasLocaleSetting:
+            Enabled: true
+            CodeHookSpecification:
+              LambdaCodeHook:
+                CodeHookInterfaceVersion: '1.0'
+                LambdaArn: !Ref LambdaFunctionArn
+
+Outputs:
+  BotId:
+    Description: The ID of the Lex bot
+    Value: !Ref ITFlowBot
+    Export:
+      Name: !Sub '${AWS::StackName}-BotId'
+  
+  BotAliasId:
+    Description: The ID of the bot alias
+    Value: !Ref ITFlowBotAlias
+    Export:
+      Name: !Sub '${AWS::StackName}-BotAliasId'
+  
+  BotVersion:
+    Description: The version of the bot
+    Value: !GetAtt ITFlowBotVersion.BotVersion
+    Export:
+      Name: !Sub '${AWS::StackName}-BotVersion'
